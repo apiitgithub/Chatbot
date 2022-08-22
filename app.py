@@ -1,45 +1,42 @@
-import streamlit as st 
-from nltk.chat.util import Chat, reflections
-from pyjokes import get_joke
+import streamlit as st
+import torch
+import transformers
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-st.title('Resolvers_chatbot')
-st.title('Created by Resolvers')
+def load_data():
+  tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+  model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+  return tokenizer, model
 
+tokenizer, model = load_data()
 
-pairs = [
-    
-         ['hi', ['I am a chatbot made by Resolvers']],
-         ['Is everytthing ok', ['Yes Sir, I can Do many Tasks.']],
-         ['about you', ['Soy un ChatBot created by Napoleon to Hugo']],
-         ['Your creator?', ['Napoleon Perez has created me.']],
-         ['You are arrogant', ['Arrogance is not one of my emotions']] ,       
-         ['Favorite_Food', ['Pizza']] ,
-         ['Favorite_Color', ['Red']],
-         ['Favorite_Movie', ['The Godfather']],
-         ['Favorite_Song', ['The One Who Knows']],
-         ['Favorite_Book', ['The Alchemist']],
-         ['Favorite_Game', ['The Witcher']],
-         ['Favorite_Game', ['Chess']],
-         ['Machine Learning', ['The best subject in the world']],
-         ['Artificial Intelligence', ['The best subject in the world']],
-         ['Deep Learning', ['The best subject in the world']]
-        
+st.title("Chat with a Resolvers")
+st.write("We will keep in touch with you.")
+input = st.text_input('Your text message:')
 
-     ]
+if 'count' not in st.session_state or st.session_state.count == 6:
+  st.session_state.count = 0 
+  st.session_state.chat_history_ids = None
+  st.session_state.old_response = ''
+else:
+  st.session_state.count += 1
 
-st.title("Rule based Chatbot")
-st.subheader("This is a Rule based Chatbot demo ")
+# tokenize the new input sentence
+new_user_input_ids = tokenizer.encode(input + tokenizer.eos_token, return_tensors='pt')
 
+# append the new user input tokens to the chat history
+bot_input_ids = torch.cat([st.session_state.chat_history_ids, new_user_input_ids], dim=-1) if st.session_state.count > 1 else new_user_input_ids
 
-def main():
-    st.write("The Bot is code to answer your questions")
-    ref = st.text_input("Start the chat")
+# generate a response 
+st.session_state.chat_history_ids = model.generate(bot_input_ids, max_length=500, pad_token_id=tokenizer.eos_token_id)
 
-    # a = st.text_input("Initialize your Conversation By Typing Hi")
-    # chat.converse()
-    chat = Chat(pairs, reflections)
-    respo = chat.respond(ref)
-    st.write(respo)
+# convert the tokens to text, and then split the responses into lines
+response = tokenizer.decode(st.session_state.chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
 
-if __name__=="__main__":
-    main()
+if st.session_state.old_response == response:
+  bot_input_ids = new_user_input_ids
+  st.session_state.chat_history_ids = model.generate(bot_input_ids, max_length=5000, pad_token_id=tokenizer.eos_token_id)
+  response = tokenizer.decode(st.session_state.chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
+  
+st.write(f"Resolvers Agent: {response}")
+st.session_state.old_response = response
