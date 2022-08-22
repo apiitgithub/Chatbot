@@ -8,10 +8,24 @@ def load_data():
   model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
   return tokenizer, model
 
+
+
 tokenizer, model = load_data()
 
-st.title("Chat with a Resolvers")
-st.write("We will keep in touch with you.")
+
+
+st.title("Chatbot in real time")
+from PIL import Image
+image = Image.open('Bot.jpg')
+st.image(image, caption='Bot')
+
+
+st.write("This is a demo of a chatbot that uses a pretrained model from the huggingface library.")
+
+
+st.write("Write a text message as if writing a text message to a human. The machine will attempt to respond with an appropriate text message.")
+
+
 input = st.text_input('Your text message:')
 
 if 'count' not in st.session_state or st.session_state.count == 6:
@@ -38,5 +52,5 @@ if st.session_state.old_response == response:
   st.session_state.chat_history_ids = model.generate(bot_input_ids, max_length=5000, pad_token_id=tokenizer.eos_token_id)
   response = tokenizer.decode(st.session_state.chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
   
-st.write(f"Resolvers Agent: {response}")
+st.write(f"Machine text message: {response}")
 st.session_state.old_response = response
