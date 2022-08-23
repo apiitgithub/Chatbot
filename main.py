@@ -18,8 +18,8 @@ def load_data():
  
 tokenizer, model = load_data()
 
-st.write("Welcome to the  Resolvers Chatbot. I am still learning, please be patient")
-st.write("All Copyright Recived @ Resolvers Digital Services")
+st.write("Welcome to the  Resolvers Chatbot. I am still learning, please be patient.")
+st.write("All Copyright Recived @ Resolvers Digital Services.")
 input = st.text_input('User:')
 
 if 'count' not in st.session_state or st.session_state.count == 6:
@@ -45,5 +45,5 @@ if st.session_state.old_response == response:
 
    response = tokenizer.decode(st.session_state.chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
 
-st.write(f"Chatbot: {response}")
+st.write(f"Resolvers Agent: {response}")
 st.session_state.old_response = response
