@@ -4,7 +4,7 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-st.title("Live Help Resolvers- Testing Resolvers")
+st.title("Live Help Resolvers Club Sri Lanka")
 
 from PIL import Image
 image = Image.open('resolvers.png')
