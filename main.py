@@ -4,11 +4,11 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-st.title("Chatbot - Testing Resolvers")
+st.title("Live Help Resolvers- Testing Resolvers")
 
 from PIL import Image
 image = Image.open('resolvers.png')
-st.image(image, caption='logo')
+st.image(image, caption='')
 
 @st.cache(hash_funcs={transformers.models.gpt2.tokenization_gpt2_fast.GPT2TokenizerFast: hash}, suppress_st_warning=True)
 def load_data():    
@@ -18,7 +18,8 @@ def load_data():
  
 tokenizer, model = load_data()
 
-st.write("Welcome to the Chatbot. I am still learning, please be patient")
+st.write("Welcome to the  Resolvers Chatbot. I am still learning, please be patient")
+st.write("All Copyright Recived @ Resolvers Digital Services")
 input = st.text_input('User:')
 
 if 'count' not in st.session_state or st.session_state.count == 6:
