@@ -4,11 +4,11 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-st.title("Chatbot using Hugging Face Transformers")
+st.title("Chatbot - Testing Resolvers")
 
 from PIL import Image
-image = Image.open('bot.jpg')
-st.image(image, caption='bot')
+image = Image.open('resolvers.png')
+st.image(image, caption='logo')
 
 @st.cache(hash_funcs={transformers.models.gpt2.tokenization_gpt2_fast.GPT2TokenizerFast: hash}, suppress_st_warning=True)
 def load_data():    
